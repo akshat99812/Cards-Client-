@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import RecoilContextProvider from "@/lib/RecoilContextProvider";
 
 
 
@@ -32,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <RecoilContextProvider>
         {children}
+        </RecoilContextProvider>
         <ToastContainer
           position="top-right"
           autoClose={5000}
