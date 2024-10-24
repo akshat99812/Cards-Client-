@@ -3,22 +3,19 @@ import { useState ,useEffect} from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import {  useRecoilState } from "recoil";
-import { cardState } from "../store/state";
+import { cardState,room,socketGlobal,lastPlayed} from "../store/state";
 
 export const Queue=()=>{
 
   const [selectedRoomSize, setSelectedRoomSize] = useState(3);
   const [status, setStatus] = useState("");
-  const [roomData, setRoomData] = useState({
-    roomId: "",
-    players: [""],
-    leaderId: "",
-    playerId: "",
-  })
+  const [roomData, setRoomData] = useRecoilState(room);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [socket, setSocket] = useState<any>(null);
+  const [socketG, setSocketG] = useRecoilState(socketGlobal)
   const [dis,setDis]=useState(true)
   const [card, setCard] = useRecoilState(cardState);
+  const [lastPlayedCard,setLastPlayed]=useRecoilState(lastPlayed)
 
   useEffect(() => {
     const socketConnection = io("http://localhost:3000");
@@ -36,7 +33,7 @@ export const Queue=()=>{
 
     socketConnection.on("disconnect", () => {
       console.log("Disconnected from server.");
-      setStatus("Disconnected from server.");
+      setStatus("Disconnected from server from queue.");
     });
 
     socketConnection.on("leader-joined", (data: { roomId: string; leaderId: string }) => {
@@ -50,11 +47,13 @@ export const Queue=()=>{
       setDis(false)
     });
 
+    socketConnection.on('lastPlayed', (data) => {
+      setLastPlayed(data);
+      console.log("lastPlayed from queue",data)
+  });
+
     setSocket(socketConnection);
 
-    return () => {
-      socketConnection.disconnect();
-    };
   }, []);
 
     

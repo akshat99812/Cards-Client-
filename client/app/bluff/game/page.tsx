@@ -29,28 +29,25 @@ export default function Page() {
 
     return () => {
       socket.disconnect();
-    }
+    };
   }, []);
 
   useEffect(()=>{
     setCards(card)
   },[card])
 
-
   return (
     <div>
       <Navbar></Navbar>
       {cards.length <= 0 ? (
-        <Queue></Queue>
+        <Queue ></Queue>
       ): (
         <div>
-          hi from queuwe page
+          hi from queue page
         </div>
       )
       }
-      <GameTable></GameTable>
-
-      
+      <GameTable cards={cards}></GameTable>
     </div>
   );
 }
