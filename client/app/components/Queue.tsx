@@ -27,6 +27,7 @@ export const Queue=()=>{
 
     socketConnection.on("room-joined", (data: { roomId: string; players: string[]; leaderId: string; playerId: string }) => {
       console.log("Joined room:", data.roomId);
+      console.log("My Id in room:", data.playerId);
       setRoomData(data);
       setStatus(`Joined room: ${data.roomId}`);
     });
@@ -52,12 +53,27 @@ export const Queue=()=>{
       console.log("lastPlayed from queue",data)
   });
 
+   // Listening for turn updates
+   socketConnection.on('turn', ({ roomId, playerId }) => {
+    if (playerId === roomData.playerId) {
+        console.log("It's your turn!");
+        // Here you can show a prompt or enable play options for the player
+    } else {
+        console.log("Waiting for other players...");
+    }
+    });
+
+    // Listening for other players' actions
+    socketConnection.on('lastPlayed', ({ player, card }) => {
+        console.log(`Player ${player} played card(s):`, card);
+        // Update the UI to reflect the last played card(s) from another player
+    });
+
     setSocket(socketConnection);
 
   }, []);
 
     
-
   const handleJoinQueue = () => {
     console.log("Joining queue for room size:", selectedRoomSize);
     setStatus("Waiting to join a room...");

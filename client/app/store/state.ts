@@ -27,3 +27,8 @@ export const lastPlayed = atom<number[] | undefined>({
   key: 'lastPlayed',
   default: undefined,
 })
+
+export const bluffedCard = atom<number | undefined>({
+  key: 'bluffedCard',
+  default: undefined,
+})

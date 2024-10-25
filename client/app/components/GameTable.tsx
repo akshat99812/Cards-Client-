@@ -43,31 +43,36 @@ const GameTable = ({cards}) => {
     }
     
     const playCards = async () => {
+        
         if (chosenCards.length > 0) {
+            // Clear selected cards from the player's hand
             setChosenCards([]);
             const newCards = cards.filter((index: number) => !chosenCards.includes(index));
             setCard(newCards);
             resetCards();
-            setCount(count+1);
-
+            setCount(count + 1);
+    
             const data = {
                 roomId: roomData.roomId,
                 player: roomData.playerId,
-                card: chosenCards
+                card: chosenCards,
             };
     
-            // Emit the playCard event
+            // Emit the playCard event to the server
             socket.emit('playCard', data);
-            console.log("data that was emitted",data)
-            
-            socket.disconnect(); // Ensures proper cleanup
-        
+            console.log("data that was emitted", data);
+    
         } else {
             console.log("No cards selected to play");
         }
-    }
+    };
 
     const skipturn=async () => {
+        const data = {
+            roomId: roomData.roomId,
+            player: roomData.playerId,
+        };
+        socket.emit('skipTurn', data);
     }
     const resetCards=async () => {
         setChosenCards([])
@@ -147,7 +152,7 @@ const GameTable = ({cards}) => {
       </div>
       <div className='flex h-[200px]'>
       <div className='w-3/4 bg-purple-500 flex px-2'>
-    {cards.map((card: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<React.AwaitedReactNode> | null | undefined, index: React.Key | null | undefined) => (
+      {cards.map((card: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | Promise<React.AwaitedReactNode> | null | undefined, index: React.Key | null | undefined) => (
         <div 
             key={index} 
             className={`px-3 my-auto h-16 mx-2 ${chosenCards.includes(card) ? 'bg-green-500' : 'bg-red-500'}`} 
